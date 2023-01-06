@@ -15,7 +15,7 @@ namespace AngularStore.WebAPI.Controllers
         [HttpGet("{id}")]
         public string GetProduct(int id)
         {
-            return $"It will be one product № {id}";
+            return $"It will be one product number {id}";
         }
     }
 }
