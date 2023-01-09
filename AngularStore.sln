@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngularStore.Database", "An
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngularStore.WebAPI", "AngularStore.WebAPI\AngularStore.WebAPI.csproj", "{E5756F16-E01D-4A06-9CA7-F7F114DCB39E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngularStore.Core", "AngularStore.Core\AngularStore.Core.csproj", "{1BFE0956-AF4F-499E-A52B-F1BD735A1795}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{E5756F16-E01D-4A06-9CA7-F7F114DCB39E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5756F16-E01D-4A06-9CA7-F7F114DCB39E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5756F16-E01D-4A06-9CA7-F7F114DCB39E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BFE0956-AF4F-499E-A52B-F1BD735A1795}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BFE0956-AF4F-499E-A52B-F1BD735A1795}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BFE0956-AF4F-499E-A52B-F1BD735A1795}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BFE0956-AF4F-499E-A52B-F1BD735A1795}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
