@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AngularStore.Database.Entities
+namespace AngularStore.Core.Entities
 {
-    public class Product
+    public class BaseEntity
     {
         public int Id { get; set; }
-
-        public string Name { get; set; }
     }
 }

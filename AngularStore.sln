@@ -3,9 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngularStore.Database", "AngularStore.Database\AngularStore.Database.csproj", "{BEE0ABE1-8FCB-4213-86DD-B9273D19D7D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AngularStore.Database", "AngularStore.Database\AngularStore.Database.csproj", "{BEE0ABE1-8FCB-4213-86DD-B9273D19D7D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngularStore.WebAPI", "AngularStore.WebAPI\AngularStore.WebAPI.csproj", "{E5756F16-E01D-4A06-9CA7-F7F114DCB39E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AngularStore.WebAPI", "AngularStore.WebAPI\AngularStore.WebAPI.csproj", "{E5756F16-E01D-4A06-9CA7-F7F114DCB39E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AngularStore.Core", "AngularStore.Core\AngularStore.Core.csproj", "{1BFE0956-AF4F-499E-A52B-F1BD735A1795}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A6901383-8DDA-4F38-9163-D9C77C76CCAE}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +28,10 @@ Global
 		{E5756F16-E01D-4A06-9CA7-F7F114DCB39E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5756F16-E01D-4A06-9CA7-F7F114DCB39E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5756F16-E01D-4A06-9CA7-F7F114DCB39E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BFE0956-AF4F-499E-A52B-F1BD735A1795}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BFE0956-AF4F-499E-A52B-F1BD735A1795}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BFE0956-AF4F-499E-A52B-F1BD735A1795}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BFE0956-AF4F-499E-A52B-F1BD735A1795}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
