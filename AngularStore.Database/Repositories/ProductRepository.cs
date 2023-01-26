@@ -21,17 +21,10 @@ namespace AngularStore.Database.Repositories
 
         public async Task<IReadOnlyList<Product>> GetProductAsync()
         {
-            var typeId = 1;
-
-            var products = await _context.Products.Where(x => x.ProductTypeId == typeId).
-                Include(x => x.ProductType).ToListAsync();
-
-            return products;
-
-            //return await _context.Products
-            //    .Include(p => p.ProductType)
-            //    .Include(p => p.ProductBrand)
-            //    .ToListAsync();
+            return await _context.Products
+                .Include(p => p.ProductType)
+                .Include(p => p.ProductBrand)
+                .ToListAsync();
         }
 
         public async Task<IReadOnlyList<ProductBrand>> GetProductBrandsAsync()

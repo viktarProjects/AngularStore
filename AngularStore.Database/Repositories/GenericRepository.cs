@@ -1,6 +1,5 @@
 ﻿using AngularStore.Core.Entities;
 using AngularStore.Core.Interfaces;
-using AngularStore.Core.Specifications;
 using AngularStore.Database.Data;
 using AngularStore.Database.Evaluators;
 using Microsoft.EntityFrameworkCore;
@@ -23,9 +22,11 @@ namespace AngularStore.Database.Repositories
 
         public async Task<IReadOnlyList<T>> GetAllAsync()
         {
-
             return await _storeContet.Set<T>().ToListAsync();
         }
+
+        //public async Task<T> GetByIdAsync(int id) => 
+        //    await _storeContet.Set<T>().FindAsync(id);
 
         public async Task<T> GetByIdAsync(int id)
         {
@@ -40,6 +41,11 @@ namespace AngularStore.Database.Repositories
         public async Task<IReadOnlyList<T>> GetAllWithSpec(ISpecification<T> specification)
         {
             return await ApplySpecification(specification).ToListAsync();
+        }
+
+        public async Task<int> CountAsync(ISpecification<T> specification)
+        {
+            return await ApplySpecification(specification).CountAsync();
         }
 
         private IQueryable<T> ApplySpecification(ISpecification<T> specification)

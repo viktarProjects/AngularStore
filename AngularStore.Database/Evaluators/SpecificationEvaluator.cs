@@ -1,11 +1,6 @@
 ﻿using AngularStore.Core.Entities;
-using AngularStore.Core.Specifications;
+using AngularStore.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AngularStore.Database.Evaluators
 {
@@ -19,6 +14,21 @@ namespace AngularStore.Database.Evaluators
             if(specification.Criteria != null)
             {
                 query = query.Where(specification.Criteria);
+            }
+
+            if (specification.OrderBy != null)
+            {
+                query = query.OrderBy(specification.OrderBy);
+            }
+
+            if (specification.OrderByDescending != null)
+            {
+                query = query.OrderByDescending(specification.OrderByDescending);
+            }
+
+            if(specification.IsPagingEnabled)
+            {
+                query = query.Skip(specification.Skip).Take(specification.Take);
             }
 
             query = specification.Includes.Aggregate(query, (current, include) => current.Include(include));
