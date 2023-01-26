@@ -1,6 +1,5 @@
 ﻿using AngularStore.Core.Entities;
 using AngularStore.Core.Interfaces;
-using AngularStore.Core.Specifications;
 using AngularStore.Database.Data;
 using AngularStore.Database.Evaluators;
 using Microsoft.EntityFrameworkCore;
@@ -14,37 +13,61 @@ namespace AngularStore.Database.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
-        private readonly StoreContext _storeContet;
+        private readonly StoreContext _storeContext;
 
-        public GenericRepository(StoreContext storeContet)
+        public GenericRepository(StoreContext storeContext)
         {
-            _storeContet = storeContet;
+            _storeContext = storeContext;
         }
 
         public async Task<IReadOnlyList<T>> GetAllAsync()
         {
-
-            return await _storeContet.Set<T>().ToListAsync();
+            return await _storeContext.Set<T>().ToListAsync();
         }
+
+        //public async Task<T> GetByIdAsync(int id) => 
+        //    await _storeContet.Set<T>().FindAsync(id);
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await _storeContet.Set<T>().FindAsync(id);
+            return await _storeContext.Set<T>().FindAsync(id);
         }
 
-        public async Task<T> GetEntitySpec(ISpecification<T> specification)
-        {
-            return await ApplySpecification(specification).FirstOrDefaultAsync();
-        }
-
-        public async Task<IReadOnlyList<T>> GetAllWithSpec(ISpecification<T> specification)
+        public async Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecification<T> specification)
         {
             return await ApplySpecification(specification).ToListAsync();
         }
 
+        public async Task<T> GetEntityWithSpecAsync(ISpecification<T> specification)
+        {
+            return await ApplySpecification(specification).FirstOrDefaultAsync();
+        }
+
+        public async Task<int> CountAsync(ISpecification<T> specification)
+        {
+            return await ApplySpecification(specification).CountAsync();
+        }
+
+
         private IQueryable<T> ApplySpecification(ISpecification<T> specification)
         {
-            return SpecificationEvaluator<T>.GetQuery(_storeContet.Set<T>().AsQueryable(), specification);
+            return SpecificationEvaluator<T>.GetQuery(_storeContext.Set<T>().AsQueryable(), specification);
+        }
+
+        public void Add(T entity)
+        {
+            _storeContext.Set<T>().Add(entity);
+        }
+
+        public void Update(T entity)
+        {
+            _storeContext.Set<T>().Attach(entity);
+            _storeContext.Entry(entity).State = EntityState.Modified;
+        }
+
+        public void Delete(T entity)
+        {
+            _storeContext.Set<T>().Remove(entity);
         }
     }
 }

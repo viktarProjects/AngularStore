@@ -1,17 +1,15 @@
 ﻿using AngularStore.Core.Entities;
 using AngularStore.Core.Interfaces;
+using AngularStore.Core.Params;
 using AngularStore.Core.Specifications;
-using AngularStore.Database.Data;
 using AngularStore.WebAPI.Dto_s;
+using AngularStore.WebAPI.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace AngularStore.WebAPI.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+    public class ProductsController : BaseController
     {
         private readonly IGenericRepository<Product> _productsRepo;
         private readonly IGenericRepository<ProductBrand> _productBrandRepo;
@@ -28,23 +26,33 @@ namespace AngularStore.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetProducts()
+        public async Task<ActionResult<Pagination<ProductDto>>> GetProducts([FromQuery]ProductSpecParams productParams)
         {
-            var spec = new ProductWithTypesAndBrandsSpecification();
+            var spec = new ProductWithTypesAndBrandsSpecification(productParams);
 
-            var products = await _productsRepo.GetAllWithSpec(spec);
+            var countSpec = new ProductWithFiltersForCountSpecification(productParams);
 
-            return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products));
+            var totalItems = await _productsRepo.CountAsync(countSpec);
+
+            var products = await _productsRepo.GetAllWithSpecAsync(spec); 
+
+            var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductDto>>(products);
+
+            return Ok(new Pagination<ProductDto>(productParams.PageNumber, productParams.PageSize, totalItems, data));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDto>> GetProduct(int id)
         {
-            var spec = new ProductWithTypesAndBrandsSpecification(id);
+            var specification = new ProductWithTypesAndBrandsSpecification(id);
 
-            var product = await _productsRepo.GetEntitySpec(spec);
+            var product = await _productsRepo.GetEntityWithSpecAsync(specification);
 
-            return _mapper.Map<Product, ProductDto>(product);
+            var mappedProduct = _mapper.Map<Product, ProductDto>(product);
+
+            return product is not null 
+                ? Ok(mappedProduct) 
+                : NotFound();
         }
 
         [HttpGet("brands")]

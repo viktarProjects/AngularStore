@@ -1,4 +1,5 @@
 ﻿using AngularStore.Core.Entities;
+using AngularStore.Core.Entities.OrderAggregate;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,20 @@ namespace AngularStore.Database.Data
                     foreach (var product in products)
                     {
                         await context.Products.AddAsync(product);
+                    }
+
+                    await context.SaveChangesAsync();
+                }
+
+                if (!context.DeliveryMethods.Any())
+                {
+                    var deliveryMethodsData = File.ReadAllText("../AngularStore.Database/SeedData/delivery.json");
+
+                    var methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryMethodsData);
+
+                    foreach (var item in methods)
+                    {
+                        await context.DeliveryMethods.AddAsync(item);
                     }
 
                     await context.SaveChangesAsync();

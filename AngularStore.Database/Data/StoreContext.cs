@@ -1,4 +1,5 @@
 ﻿using AngularStore.Core.Entities;
+using AngularStore.Core.Entities.OrderAggregate;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace AngularStore.Database.Data
 {
     public class StoreContext : DbContext
     {
-        public StoreContext(DbContextOptions options) : base(options)
+        public StoreContext(DbContextOptions<StoreContext> options) : base(options)
         {
 
         }
@@ -21,6 +22,14 @@ namespace AngularStore.Database.Data
         public DbSet<ProductType> ProductTypes { get; set; }
 
         public DbSet<Product> Products { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<OrderItem> OrderItems { get; set; }
+
+        public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+
+        public DbSet<Basket> Baskets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

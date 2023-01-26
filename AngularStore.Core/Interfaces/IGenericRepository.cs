@@ -1,5 +1,4 @@
 ﻿using AngularStore.Core.Entities;
-using AngularStore.Core.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +9,20 @@ namespace AngularStore.Core.Interfaces
 {
     public interface IGenericRepository<T> where T : BaseEntity
     {
-        Task<T> GetByIdAsync(int Id);
         Task<IReadOnlyList<T>> GetAllAsync();
 
-        Task<T> GetEntitySpec(ISpecification<T> specification);
+        Task<T> GetByIdAsync(int Id);
 
-        Task<IReadOnlyList<T>> GetAllWithSpec(ISpecification<T> specification);
+        Task<T> GetEntityWithSpecAsync(ISpecification<T> specification);
+
+        Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecification<T> specification);
+
+        Task<int> CountAsync(ISpecification<T> specification);
+
+        void Add(T entity);
+
+        void Update(T entity);
+
+        void Delete(T entity);
     }
 }
