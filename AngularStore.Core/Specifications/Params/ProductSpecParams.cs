@@ -16,9 +16,9 @@ namespace AngularStore.Core.Params
 
         public int PageNumber { get; set; } = 1;
 
-        public int? BrandId { get; set; }
+        public string? Brands { get; set; } = "";
 
-        public int? TypeId { get; set; }
+        public string? Types { get; set; } = "";
 
         public string Sort { get; set; } = "";
 

@@ -1,3 +1,4 @@
+using AngularStore.Core.Configuration;
 using AngularStore.Core.Entities.Identity;
 using AngularStore.Database.Data;
 using AngularStore.Database.Identity;
@@ -7,6 +8,7 @@ using AngularStore.WebAPI.Middlewares;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +18,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddIdentityCore<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<AppIdentityDbContext>()
+                .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorization();
 builder.Services.AddDbContext<StoreContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -33,6 +38,7 @@ builder.Services.AddCors(opt =>
     });
 });
 
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
 builder.Services.AddSwaggerAuthentification();
 builder.Services.AddApplicationServices();
 builder.Services.AddIdentityServices(builder.Configuration);
@@ -48,6 +54,14 @@ if (app.Environment.IsDevelopment())
 {
 
 }
+
+//app.UseFileServer(new FileServerOptions
+//{
+//    FileProvider = new PhysicalFileProvider(
+//                    Path.Combine(Directory.GetCurrentDirectory(), "confirmed")),
+//    RequestPath = "wwwroot/confirmed",
+//    EnableDefaultFiles = true
+//});
 
 app.UseStatusCodePagesWithReExecute("/errors/{0}");
 

@@ -15,5 +15,8 @@ namespace AngularStore.WebAPI.Dto_s
         [RegularExpression("^(?=.*[a - z])(?=.*[A - Z])(?=.*\\d)(?=.*[@$! % *? &])[A - Za - z\\d@$! % *? &]{8,}$",
             ErrorMessage ="Password must have 1 Uppercase, 1 Lowercase, 1 non-numeric character and at least 6 numbers")]
         public string Password { get; set; }
+
+        [Required]
+        public string PhoneNumber { get; set; }
     }
 }

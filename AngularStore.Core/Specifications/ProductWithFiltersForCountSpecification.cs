@@ -15,8 +15,8 @@ namespace AngularStore.Core.Specifications
         {
             return x =>
             (string.IsNullOrEmpty(specParams.Search) || x.Name.ToLower().Contains(specParams.Search))
-            && (!specParams.BrandId.HasValue || x.ProductBrandId == specParams.BrandId)
-            && (!specParams.TypeId.HasValue || x.ProductTypeId == specParams.TypeId);
+            && (!specParams.Brands!.Any() || specParams.Brands!.Contains(x.ProductBrand.Name))
+            && (!specParams.Types!.Any() || specParams.Types!.Contains(x.ProductType.Name));
         }
 
         public ProductWithFiltersForCountSpecification(ProductSpecParams productParams)

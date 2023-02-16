@@ -16,7 +16,10 @@ namespace AngularStore.WebAPI.Extensions
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IMessageService, MessageService>();
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
+
+
 
             services.Configure<ApiBehaviorOptions>(options =>
             {

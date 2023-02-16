@@ -10,8 +10,8 @@ namespace AngularStore.Core.Specifications
         {
             return x =>
             (string.IsNullOrEmpty(specParams.Search) || x.Name.ToLower().Contains(specParams.Search))
-            && (!specParams.BrandId.HasValue || x.ProductBrandId == specParams.BrandId)
-            && (!specParams.TypeId.HasValue || x.ProductTypeId == specParams.TypeId);
+            && (string.IsNullOrEmpty(specParams.Brands) || specParams.Brands!.Contains(x.ProductBrand.Name))
+            && (string.IsNullOrEmpty(specParams.Types) || specParams.Types!.Contains(x.ProductType.Name));
         }
 
         public ProductWithTypesAndBrandsSpecification(ProductSpecParams productParams)

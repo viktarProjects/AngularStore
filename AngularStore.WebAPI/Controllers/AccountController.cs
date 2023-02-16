@@ -1,5 +1,6 @@
 ﻿using AngularStore.Core.Entities.Identity;
 using AngularStore.Core.Interfaces;
+using AngularStore.Core.Models;
 using AngularStore.WebAPI.Dto_s;
 using AngularStore.WebAPI.Errors;
 using AngularStore.WebAPI.Extensions;
@@ -16,17 +17,18 @@ namespace AngularStore.WebAPI.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly IBasketService _basketService;
-
+        private readonly IMessageService _messageService;
         private readonly IMapper _mapper;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            ITokenService tokenService, IMapper mapper, IBasketService basketService)
+            ITokenService tokenService, IMapper mapper, IBasketService basketService, IMessageService messageService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
             _mapper = mapper;
             _basketService = basketService;
+            _messageService = messageService;
         }
 
         [Authorize]
@@ -35,12 +37,7 @@ namespace AngularStore.WebAPI.Controllers
         {
             var user = await _userManager.FindByEmailFromClaimsPrincipal(HttpContext.User);
 
-            return new UserDto
-            {
-                Email = user.Email,
-                UserName = user.UserName,
-                Token = _tokenService.CreateToken(user)
-            };
+            return CreateUserDto(user);
         }
 
         [HttpPost("login")]
@@ -48,41 +45,13 @@ namespace AngularStore.WebAPI.Controllers
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
-            if (user == null) return Unauthorized(new ApiResponse(401));
-
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
+            if (!result.Succeeded || user == null) return Unauthorized(new ApiResponse(401));
 
-            var userDto = new UserDto
-            {
-                Email = user.Email,
-                UserName = user.UserName,
-                Token = _tokenService.CreateToken(user)
-            };
+            await UniteBaskets(user);
 
-            var anonBasketId = Request.Cookies["buyerId"];
-
-            var userBasketId = user.UserName;
-
-            await _basketService.UniteBasket(anonBasketId, userBasketId);
-
-            RemoveCookie(Request.Cookies["buyerId"]);
-
-            return userDto;
-        }
-
-        private void RemoveCookie(string key)
-        {
-            if (key == null) return;
-            //Erase the data in the cookie
-            CookieOptions option = new CookieOptions();
-            option.Expires = DateTime.Now.AddDays(-1);
-            option.Secure = true;
-            option.IsEssential = true;
-            Response.Cookies.Append(key, string.Empty, option);
-            //Then delete the cookie
-            Response.Cookies.Delete(key);
+            return CreateUserDto(user);
         }
 
         [HttpPost("register")]
@@ -96,17 +65,34 @@ namespace AngularStore.WebAPI.Controllers
                 });
             }
 
-            var user = new AppUser
-            {
+            var user = new AppUser{
                 UserName = registerDto.UserName,
                 Email = registerDto.Email,
+                PhoneNumber = registerDto.PhoneNumber,
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
+            if (result.Succeeded) await SendMessage(user);
+            
             if (!result.Succeeded) return BadRequest(new ApiResponse(400));
 
             return Ok(new ApiResponse(200));
+        }
+
+        [HttpGet("ConfirmEmail", Name = "confirmation")]
+        public async Task<ContentResult> ConfirmEmail(string token, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user != null)
+            {
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+
+                var html = System.IO.File.ReadAllText(@"wwwroot/confirmed/confirmed.html");
+                return base.Content(html, "text/html");
+            }
+            return null;
         }
 
         [Authorize]
@@ -137,6 +123,48 @@ namespace AngularStore.WebAPI.Controllers
         public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromQuery] string email)
         {
             return await _userManager.FindByEmailAsync(email) != null;
+        }
+
+        private void RemoveCookie(string key)
+        {
+            if (key == null) return;
+            CookieOptions option = new CookieOptions();
+            option.Expires = DateTime.Now.AddDays(-1);
+            option.Secure = true;
+            option.IsEssential = true;
+            Response.Cookies.Append(key, string.Empty, option);
+            Response.Cookies.Delete(key);
+        }
+
+        private async Task SendMessage(AppUser user)
+        {
+            var toList = new List<string>() { user.Email };
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink = Url.Link("confirmation", new { token, email = user.Email });
+            var message = new MailData(toList, "Email confirmation", confirmationLink);
+            _messageService.SendMessage(message);
+        }
+
+        private async Task UniteBaskets(AppUser user)
+        {
+            var anonBasketId = Request.Cookies["buyerId"];
+
+            var userBasketId = user.UserName;
+
+            await _basketService.UniteBasket(anonBasketId, userBasketId);
+
+            RemoveCookie(Request.Cookies["buyerId"]);
+        }
+
+        private UserDto CreateUserDto(AppUser user)
+        {
+            return new UserDto
+            {
+                Email = user.Email,
+                UserName = user.UserName,
+                PhoneNumber = user.PhoneNumber,
+                Token = _tokenService.CreateToken(user)
+            };
         }
     }
 }
