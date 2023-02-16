@@ -168,5 +168,16 @@ namespace AngularStore.WebAPI.Controllers
                 Token = _tokenService.CreateToken(user)
             };
         }
+
+        private UserDto CreateUserDto1(AppUser user)
+        {
+            return new UserDto
+            {
+                Email = user.Email,
+                UserName = user.UserName,
+                PhoneNumber = user.PhoneNumber,
+                Token = _tokenService.CreateToken(user)
+            };
+        }
     }
 }
