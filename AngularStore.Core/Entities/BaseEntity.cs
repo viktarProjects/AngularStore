@@ -9,7 +9,5 @@ namespace AngularStore.Core.Entities
     public class BaseEntity
     {
         public int Id { get; set; }
-
-        public int MyProperty1 { get; set; }
     }
 }
