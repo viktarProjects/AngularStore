@@ -25,9 +25,6 @@ namespace AngularStore.Database.Repositories
             return await _storeContext.Set<T>().ToListAsync();
         }
 
-        //public async Task<T> GetByIdAsync(int id) => 
-        //    await _storeContet.Set<T>().FindAsync(id);
-
         public async Task<T> GetByIdAsync(int id)
         {
             return await _storeContext.Set<T>().FindAsync(id);

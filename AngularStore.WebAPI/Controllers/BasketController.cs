@@ -38,7 +38,7 @@ namespace AngularStore.WebAPI.Controllers
 
         [HttpPost("add-item")]
         public async Task<ActionResult<BasketDto>> AddItem(AddItemDto addItem)
-       {
+        {
             var buyerId = GetBuyerId();
 
             var basket = await _basketService.AddItemAsync(buyerId, addItem.ProductId, addItem.Quantity);
@@ -83,7 +83,7 @@ namespace AngularStore.WebAPI.Controllers
                 Response.Cookies.Append("buyerId", basket.BuyerId, cookiesOptions);
             }
             else
-            {
+        {
                 Response.Cookies.Delete("buyerId");
             }
         }

@@ -8,6 +8,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AngularStore.WebAPI.Controllers
 {
@@ -42,7 +43,7 @@ namespace AngularStore.WebAPI.Controllers
 
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
-        {
+            {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
@@ -126,7 +127,7 @@ namespace AngularStore.WebAPI.Controllers
         }
 
         private void RemoveCookie(string key)
-        {
+            {
             if (key == null) return;
             CookieOptions option = new CookieOptions();
             option.Expires = DateTime.Now.AddDays(-1);
@@ -137,16 +138,16 @@ namespace AngularStore.WebAPI.Controllers
         }
 
         private async Task SendMessage(AppUser user)
-        {
+            {
             var toList = new List<string>() { user.Email };
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var confirmationLink = Url.Link("confirmation", new { token, email = user.Email });
             var message = new MailData(toList, "Email confirmation", confirmationLink);
             _messageService.SendMessage(message);
-        }
+            }
 
         private async Task UniteBaskets(AppUser user)
-        {
+            {
             var anonBasketId = Request.Cookies["buyerId"];
 
             var userBasketId = user.UserName;
@@ -160,6 +161,7 @@ namespace AngularStore.WebAPI.Controllers
         {
             return new UserDto
             {
+                DisplayName = user.DisplayName,
                 Email = user.Email,
                 UserName = user.UserName,
                 PhoneNumber = user.PhoneNumber,
