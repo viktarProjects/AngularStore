@@ -43,12 +43,12 @@ namespace AngularStore.WebAPI.Controllers
 
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
-            {
+        {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            var result1 = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if (!result.Succeeded || user == null) return Unauthorized(new ApiResponse(401));
+            if (!result1.Succeeded || user == null) return Unauthorized(new ApiResponse(401));
 
             await UniteBaskets(user);
 
@@ -66,7 +66,8 @@ namespace AngularStore.WebAPI.Controllers
                 });
             }
 
-            var user = new AppUser{
+            var user = new AppUser
+            {
                 UserName = registerDto.UserName,
                 Email = registerDto.Email,
                 PhoneNumber = registerDto.PhoneNumber,
@@ -75,7 +76,7 @@ namespace AngularStore.WebAPI.Controllers
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
             if (result.Succeeded) await SendMessage(user);
-            
+
             if (!result.Succeeded) return BadRequest(new ApiResponse(400));
 
             return Ok(new ApiResponse(200));
@@ -127,7 +128,7 @@ namespace AngularStore.WebAPI.Controllers
         }
 
         private void RemoveCookie(string key)
-            {
+        {
             if (key == null) return;
             CookieOptions option = new CookieOptions();
             option.Expires = DateTime.Now.AddDays(-1);
@@ -138,16 +139,16 @@ namespace AngularStore.WebAPI.Controllers
         }
 
         private async Task SendMessage(AppUser user)
-            {
+        {
             var toList = new List<string>() { user.Email };
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var confirmationLink = Url.Link("confirmation", new { token, email = user.Email });
             var message = new MailData(toList, "Email confirmation", confirmationLink);
             _messageService.SendMessage(message);
-            }
+        }
 
         private async Task UniteBaskets(AppUser user)
-            {
+        {
             var anonBasketId = Request.Cookies["buyerId"];
 
             var userBasketId = user.UserName;
