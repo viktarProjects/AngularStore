@@ -161,7 +161,6 @@ namespace AngularStore.WebAPI.Controllers
         {
             return new UserDto
             {
-                DisplayName = user.DisplayName,
                 Email = user.Email,
                 UserName = user.UserName,
                 PhoneNumber = user.PhoneNumber,
